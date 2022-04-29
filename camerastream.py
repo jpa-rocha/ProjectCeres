@@ -1,5 +1,6 @@
 import io
 import picamera
+from datetime import datetime
 import logging
 import socketserver
 from threading import Condition
@@ -77,11 +78,16 @@ class StreamingServer(socketserver.ThreadingMixIn, server.HTTPServer):
     allow_reuse_address = True
     daemon_threads = True
 
-with picamera.PiCamera(resolution='640x480', framerate=24) as camera:
+with picamera.PiCamera(resolution='1280x720', framerate=24) as camera:
     output = StreamingOutput()
     #Uncomment the next line to change your Pi's Camera rotation (in degrees)
     #camera.rotation = 90
     camera.start_recording(output, format='mjpeg')
+    datetime = datetime.now()
+    dt_string = datetime.strftime("%d-%m-%Y_%H:%M:%S")
+    camera.wait_recording(10)
+    camera.capture('preprocessed_jpg/%s.jpg' % dt_string, use_video_port=True)
+    camera.wait_recording(10)
     try:
         address = ('', 8000)
         server = StreamingServer(address, StreamingHandler)
