@@ -30,7 +30,7 @@ export class AuthService {
         }
       })
       
-      return this.signToken(user.id, user.userName, user.admin, user.email);
+      return this.signToken(user.id, user.admin, user.email);
     } catch(error) {
         if (error instanceof PrismaClientKnownRequestError) {
           if (error.code === 'P2002') {
@@ -66,20 +66,18 @@ export class AuthService {
 	'Invalid password',
     );
    
-    return this.signToken(user.id, user.userName, user.admin, user.email);
+    return this.signToken(user.id, user.admin, user.email);
   }
 
   // signToken tokenizes the user information so it is passed in a
   // safe format to the browser, session duration is controled here.
   async signToken(
     userId: number,
-    userName: string,
     admin: number,
     email: string
   ): Promise<{ access_token: string }> {
     const payload = {
       sub:userId,
-	  userName,
 	  admin,
 	  email
     };
