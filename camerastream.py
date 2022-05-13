@@ -85,12 +85,12 @@ with picamera.PiCamera(resolution='1280x720', framerate=24) as camera:
     camera.start_recording(output, format='mjpeg')
     datetime = datetime.now()
     dt_string = datetime.strftime("%d-%m-%Y_%H:%M:%S")
-    camera.wait_recording(10)
-    camera.capture('preprocessed_jpg/%s.jpg' % dt_string, use_video_port=True)
-    camera.wait_recording(10)
     try:
         address = ('', 8000)
         server = StreamingServer(address, StreamingHandler)
         server.serve_forever()
+        camera.wait_recording(10)
+        camera.capture('preprocessed_jpg/%s.jpg' % dt_string, use_video_port=True)
+        camera.wait_recording(10)
     finally:
         camera.stop_recording()
